@@ -63,6 +63,15 @@ nav a:hover {
   text-decoration: underline;
 }
 
+.search-bar {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
 .add-recipe-form,
 .edit-recipe-form {
   margin-bottom: 20px;
@@ -83,6 +92,11 @@ nav a:hover {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+
+.add-recipe-form textarea,
+.edit-recipe-form textarea {
+  height: 100px;
 }
 
 .add-recipe-form button,
@@ -136,7 +150,7 @@ nav a:hover {
 }
 
 .recipe-card p {
-  margin: 0;
+  margin: 5px 0;
 }
 
 .recipe-details {
