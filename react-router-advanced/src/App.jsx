@@ -1,22 +1,28 @@
-import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import PostsComponent from './components/PostsComponent';
+import Home from './components/Home';
 
 const queryClient = new QueryClient();
 
 function App() {
-  const [showPosts, setShowPosts] = useState(true);
-
   return (
     <QueryClientProvider client={queryClient}>
-      <div style={{ padding: '20px' }}>
-        <h1>React Query Demo</h1>
-        <button onClick={() => setShowPosts(!showPosts)}>
-          {showPosts ? 'Hide Posts' : 'Show Posts'}
-        </button>
-        {showPosts && <PostsComponent />}
-      </div>
+      <BrowserRouter>
+        <div style={{ padding: '20px' }}>
+          <nav>
+            <ul style={{ listStyle: 'none', display: 'flex', gap: '20px' }}>
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/posts">Posts</Link></li>
+            </ul>
+          </nav>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/posts" element={<PostsComponent />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
