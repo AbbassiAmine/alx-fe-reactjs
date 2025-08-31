@@ -1,73 +1,87 @@
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
+import { useState } from 'react';
 
-const FormikForm = () => {
-    const initialValues = {
+const RegistrationForm = () => {
+    const [formData, setFormData] = useState({
         username: '',
         email: '',
         password: ''
+    });
+    const [errors, setErrors] = useState({});
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
     };
 
-    const validationSchema = Yup.object({
-        username: Yup.string().required('Username is required'),
-        email: Yup.string().email('Invalid email address').required('Email is required'),
-        password: Yup.string().required('Password is required')
-    });
+    const validate = () => {
+        const newErrors = {};
+        if (!formData.username) newErrors.username = 'Username is required';
+        if (!formData.email) newErrors.email = 'Email is required';
+        if (!formData.password) newErrors.password = 'Password is required';
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
-    const onSubmit = (values) => {
-        console.log('Form submitted:', values);
-        // Add your submission logic here
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (validate()) {
+            console.log('Form submitted:', formData);
+
+        }
     };
 
     return (
         <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold mb-6 text-center">Register (Formik)</h2>
-            <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={onSubmit}
-            >
-                <Form>
-                    <div className="mb-4">
-                        <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
-                        <Field
-                            type="text"
-                            id="username"
-                            name="username"
-                            className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        <ErrorMessage name="username" component="p" className="text-red-500 text-sm mt-1" />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                        <Field
-                            type="email"
-                            id="email"
-                            name="email"
-                            className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        <ErrorMessage name="email" component="p" className="text-red-500 text-sm mt-1" />
-                    </div>
-                    <div className="mb-6">
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-                        <Field
-                            type="password"
-                            id="password"
-                            name="password"
-                            className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        <ErrorMessage name="password" component="p" className="text-red-500 text-sm mt-1" />
-                    </div>
-                    <button
-                        type="submit"
-                        className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition"
-                    >
-                        Register
-                    </button>
-                </Form>
-            </Formik>
+            <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
+            <form onSubmit={handleSubmit}>
+                <div className="mb-4">
+                    <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        value={formData.username}
+                        onChange={handleChange}
+                        className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                </div>
+                <div className="mb-6">
+                    <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+                </div>
+                <button
+                    type="submit"
+                    className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition"
+                >
+                    Register
+                </button>
+            </form>
         </div>
     );
 };
 
-export default FormikForm;
+export default RegistrationForm;
