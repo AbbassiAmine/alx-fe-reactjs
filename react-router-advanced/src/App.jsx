@@ -22,7 +22,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/posts" element={<PostsComponent />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/*" element={<Profile />} />
           </Routes>
         </div>
       </BrowserRouter>
