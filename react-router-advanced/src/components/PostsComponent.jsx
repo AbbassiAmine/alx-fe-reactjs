@@ -1,22 +1,26 @@
 import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
 
-async function fetchPosts() {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+async function fetchPost({ queryKey }) {
+    const [, postId] = queryKey; // queryKey is ['post', postId]
+    const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`);
     if (!response.ok) {
-        throw new Error('Failed to fetch posts');
+        throw new Error('Failed to fetch post');
     }
     return response.json();
 }
 
-function PostsComponent() {
+function BlogPost() {
+    const { id } = useParams(); // Get post ID from URL
+
     const { data, isLoading, error, refetch } = useQuery({
-        queryKey: ['posts'],
-        queryFn: fetchPosts,
+        queryKey: ['post', id],
+        queryFn: fetchPost,
         staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
     });
 
     if (isLoading) {
-        return <div>Loading posts...</div>;
+        return <div>Loading post...</div>;
     }
 
     if (error) {
@@ -25,18 +29,14 @@ function PostsComponent() {
 
     return (
         <div>
-            <h2>Posts</h2>
-            <button onClick={() => refetch()}>Refetch Posts</button>
-            <ul>
-                {data.map((post) => (
-                    <li key={post.id}>
-                        <h3>{post.title}</h3>
-                        <p>{post.body}</p>
-                    </li>
-                ))}
-            </ul>
+            <h2>Blog Post</h2>
+            <button onClick={() => refetch()}>Refetch Post</button>
+            <div>
+                <h3>{data.title}</h3>
+                <p>{data.body}</p>
+            </div>
         </div>
     );
 }
 
-export default PostsComponent;
+export default BlogPost;
