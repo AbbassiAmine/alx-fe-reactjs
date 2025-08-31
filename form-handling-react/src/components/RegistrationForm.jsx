@@ -74,7 +74,7 @@ function RegistrationForm() {
                         type="text"
                         id="username"
                         name="username"
-                        value={formData.username}
+                        value={formData.username} // Corrected to use formData.username
                         onChange={handleChange}
                     />
                     {errors.username && <p style={{ color: 'red' }}>{errors.username}</p>}
@@ -85,7 +85,7 @@ function RegistrationForm() {
                         type="email"
                         id="email"
                         name="email"
-                        value={formData.email}
+                        value={formData.email} // Corrected to use formData.email
                         onChange={handleChange}
                     />
                     {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
@@ -96,7 +96,7 @@ function RegistrationForm() {
                         type="password"
                         id="password"
                         name="password"
-                        value={formData.password}
+                        value={formData.password} // Corrected to use formData.password
                         onChange={handleChange}
                     />
                     {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
