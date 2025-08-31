@@ -1,84 +1,111 @@
+// src/components/RegistrationForm.jsx
 import { useState } from 'react';
 
-const RegistrationForm = () => {
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [errors, setErrors] = useState({});
+function RegistrationForm() {
+    // State for form fields
+    const [formData, setFormData] = useState({
+        username: '',
+        email: '',
+        password: '',
+    });
 
+    // State for errors
+    const [errors, setErrors] = useState({});
+    const [submitStatus, setSubmitStatus] = useState(null);
+
+    // Handle input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
-        if (name === 'username') setUsername(value);
-        if (name === 'email') setEmail(value);
-        if (name === 'password') setPassword(value);
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+        // Clear errors for the field being edited
+        setErrors((prev) => ({ ...prev, [name]: '' }));
     };
 
+    // Basic validation
     const validate = () => {
         const newErrors = {};
-        if (!username) newErrors.username = 'Username is required';
-        if (!email) newErrors.email = 'Email is required';
-        if (!password) newErrors.password = 'Password is required';
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        if (!formData.username) newErrors.username = 'Username is required';
+        if (!formData.email) newErrors.email = 'Email is required';
+        else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Invalid email format';
+        if (!formData.password) newErrors.password = 'Password is required';
+        else if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
+        return newErrors;
     };
 
-    const handleSubmit = (e) => {
+    // Handle form submission
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (validate()) {
-            console.log('Form submitted:', { username, email, password });
-            // Add your submission logic here
+        const validationErrors = validate();
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        try {
+            // Simulate API call to mock endpoint
+            const response = await fetch('https://jsonplaceholder.typicode.com/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                setSubmitStatus('Registration successful!');
+                setFormData({ username: '', email: '', password: '' });
+                setErrors({});
+            } else {
+                setSubmitStatus('Registration failed. Please try again.');
+            }
+        } catch (error) {
+            setSubmitStatus('An error occurred. Please try again.');
         }
     };
 
     return (
-        <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
+        <div>
+            <h2>Registration Form (Controlled Components)</h2>
             <form onSubmit={handleSubmit}>
-                <div className="mb-4">
-                    <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
+                <div>
+                    <label htmlFor="username">Username:</label>
                     <input
                         type="text"
                         id="username"
                         name="username"
-                        value={username}
+                        value={formData.username}
                         onChange={handleChange}
-                        className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                    {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
+                    {errors.username && <p style={{ color: 'red' }}>{errors.username}</p>}
                 </div>
-                <div className="mb-4">
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                <div>
+                    <label htmlFor="email">Email:</label>
                     <input
                         type="email"
                         id="email"
                         name="email"
-                        value={email}
+                        value={formData.email}
                         onChange={handleChange}
-                        className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                    {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                    {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
                 </div>
-                <div className="mb-6">
-                    <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+                <div>
+                    <label htmlFor="password">Password:</label>
                     <input
                         type="password"
                         id="password"
                         name="password"
-                        value={password}
+                        value={formData.password}
                         onChange={handleChange}
-                        className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                    {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+                    {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
                 </div>
-                <button
-                    type="submit"
-                    className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition"
-                >
-                    Register
-                </button>
+                <button type="submit">Register</button>
             </form>
+            {submitStatus && <p>{submitStatus}</p>}
         </div>
     );
-};
+}
 
 export default RegistrationForm;
